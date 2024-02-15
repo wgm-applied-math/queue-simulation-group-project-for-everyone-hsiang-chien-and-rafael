@@ -6,11 +6,14 @@
 % Set up to run 100 samples of the queue.
 n_samples = 100;
 
-% Each sample is run up to a maximum time of 1000.
-max_time = 1000;
+% Each sample is run up to a maximum time of 480 (8 hours).
+max_time = 480;
 
 % Record how many customers are in the system at the end of each sample.
 NInSystemSamples = cell([1, n_samples]);
+
+% Recode how many customers balk
+NBalkSamples = cell([1,n_samples]);
 
 %% Run the queue simulation
 
@@ -27,12 +30,14 @@ for sample_num = 1:n_samples
     % counts, because tables like q.Log allow easy extraction of whole
     % columns like this.
     NInSystemSamples{sample_num} = q.Log.NWaiting + q.Log.NInService;
+    NBalkSamples{sample_num} = q.Log.NBalk;
 end
 
 % Join all the samples. "vertcat" is short for "vertical concatenate",
 % meaning it joins a bunch of arrays vertically, which in this case results
 % in one tall column.
 NInSystem = vertcat(NInSystemSamples{:});
+PBalk = vertcat(NBalkSamples{:});
 
 % MATLAB-ism: When you pull multiple items from a cell array, the result is
 % a "comma-separated list" rather than some kind of array.  Thus, the above
@@ -63,13 +68,9 @@ hold on;
 % max_time = 10,000 units, and LogInterval is large, say 10.
 rho = q.ArrivalRate / q.DepartureRate;
 P0 = 1 - rho;
-nMax = 10;
+nMax = 3; % 4, after the second pump
 ns = 0:nMax;
-P = zeros([1, nMax+1]);
-P(1) = P0;
-for n = 1:nMax
-    P(1+n) = P0 * rho^n;
-end
+P = [9,9,6,2]/26; % [256,256,96,24,3]/635, after the second
 plot(ns, P, 'o', MarkerEdgeColor='k', MarkerFaceColor='r');
 
 % This sets some paper-related properties of the figure so that you can
