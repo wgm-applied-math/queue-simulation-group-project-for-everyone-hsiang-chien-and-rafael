@@ -56,7 +56,7 @@ PBalk = vertcat(NBalkSamples{:});
 % Start with a histogram.  The result is an empirical PDF, that is, the
 % area of the bar at horizontal index n is proportional to the fraction of
 % samples for which there were n customers in the system.
-h = histogram(NInSystem, Normalization="probability", BinMethod="integers");
+h1 = histogram(NInSystem, Normalization="probability", BinMethod="integers");
 
 % MATLAB-ism: Once you've created a picture, you can use "hold on" to cause
 % further plotting function to work with the same picture rather than
@@ -73,6 +73,8 @@ ns = 0:nMax;
 P = [9,9,6,2]/26; % [256,256,96,24,3]/635, after the second
 plot(ns, P, 'o', MarkerEdgeColor='k', MarkerFaceColor='r');
 
+hold off
+h2 = histogram(PBalk, Normalization="probability",BinMethod="integers")
 % This sets some paper-related properties of the figure so that you can
 % save it as a PDF and it doesn't fill a whole page.
 % gcf is "get current figure handle"
