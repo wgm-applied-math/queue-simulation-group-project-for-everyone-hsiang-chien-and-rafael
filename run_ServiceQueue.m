@@ -22,7 +22,7 @@ NBalkSamples = cell([1,n_samples]);
 % the log interval should be long enough for several arrival and departure
 % events happen.
 for sample_num = 1:n_samples
-    q = ServiceQueue(LogInterval=10);
+    q = ServiceQueue(LogInterval=10,NumServers=2);
     q.schedule_event(Arrival(1, Customer(1)));
     run_until(q, max_time);
     % Pull out samples of the number of customers in the queue system. Each
@@ -68,13 +68,15 @@ hold on;
 % max_time = 10,000 units, and LogInterval is large, say 10.
 rho = q.ArrivalRate / q.DepartureRate;
 P0 = 1 - rho;
-nMax = 3; % 4, after the second pump
+nMax = 4; % 3,4 (before or after the second pump)
 ns = 0:nMax;
-P = [9,9,6,2]/26; % [256,256,96,24,3]/635, after the second
-plot(ns, P, 'o', MarkerEdgeColor='k', MarkerFaceColor='r');
+p1 = [9,9,6,2]/26; 
+p2 = [256,256,96,24,3]/635; % after the second pump
+plot(ns, p2, 'o', MarkerEdgeColor='k', MarkerFaceColor='r');
 
 hold off
-h2 = histogram(PBalk, Normalization="probability",BinMethod="integers")
+% h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
+
 % This sets some paper-related properties of the figure so that you can
 % save it as a PDF and it doesn't fill a whole page.
 % gcf is "get current figure handle"

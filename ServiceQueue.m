@@ -192,20 +192,25 @@ classdef ServiceQueue < handle
             if obj.NumServers-sum(obj.ServerAvailable)+length(obj.Waiting) == 0
                 obj.Waiting{end+1} = c;
             elseif obj.NumServers-sum(obj.ServerAvailable)+length(obj.Waiting) == 1
-                if rand()>= 1/3 
+                if rand() >= 1/(obj.NumServers+2)
                     % The Customer is appended to the list of waiting customers.
                     obj.Waiting{end+1} = c;
                 else 
                     obj.Balk{end+1} = c;
                 end
             elseif obj.NumServers-sum(obj.ServerAvailable)+length(obj.Waiting) == 2
-                 if rand()>= 2/3 
-                    % The Customer is appended to the list of waiting customers.
+                 if rand() >= 2/(obj.NumServers+2)
                     obj.Waiting{end+1} = c;
                  else
                      obj.Balk{end+1} = c;
                  end
             elseif obj.NumServers-sum(obj.ServerAvailable)+length(obj.Waiting) == 3
+                if rand() >= 3/(obj.NumServers+2)
+                    obj.Waiting{end+1} = c;
+                else
+                    obj.Balk{end+1} = c;
+                end
+            else
                 obj.Balk{end+1} = c;
             end
  
