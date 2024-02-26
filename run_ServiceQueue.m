@@ -31,6 +31,7 @@ for sample_num = 1:n_samples
     % columns like this.
     NInSystemSamples{sample_num} = q.Log.NWaiting + q.Log.NInService;
     NBalkSamples{sample_num} = q.Log.NBalk;
+    TotalTimeSamples{sample_num}=served_customer_times(q);
 end
 
 % Join all the samples. "vertcat" is short for "vertical concatenate",
@@ -38,7 +39,7 @@ end
 % in one tall column.
 NInSystem = vertcat(NInSystemSamples{:});
 PBalk = vertcat(NBalkSamples{:});
-
+TotalTime = vertcat(TotalTimeSamples{:});
 % MATLAB-ism: When you pull multiple items from a cell array, the result is
 % a "comma-separated list" rather than some kind of array.  Thus, the above
 % means
@@ -52,10 +53,12 @@ PBalk = vertcat(NBalkSamples{:});
 % f(*args).
 
 %% Make a picture
-
 % Start with a histogram.  The result is an empirical PDF, that is, the
 % area of the bar at horizontal index n is proportional to the fraction of
 % samples for which there were n customers in the system.
+
+%h3 = histogram(TotalTime, Normalization="probability", BinMethod="integers");
+%h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
 h1 = histogram(NInSystem, Normalization="probability", BinMethod="integers");
 
 % MATLAB-ism: Once you've created a picture, you can use "hold on" to cause
@@ -68,14 +71,13 @@ hold on;
 % max_time = 10,000 units, and LogInterval is large, say 10.
 rho = q.ArrivalRate / q.DepartureRate;
 P0 = 1 - rho;
-nMax = 4; % 3,4 (before or after the second pump)
+nMax = 4; % 3 or 4 (before or after the second pump)
 ns = 0:nMax;
 p1 = [9,9,6,2]/26; 
 p2 = [256,256,96,24,3]/635; % after the second pump
 plot(ns, p2, 'o', MarkerEdgeColor='k', MarkerFaceColor='r');
 
 hold off
-% h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
 
 % This sets some paper-related properties of the figure so that you can
 % save it as a PDF and it doesn't fill a whole page.
