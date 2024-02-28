@@ -6,7 +6,7 @@
 % Set up to run 100 samples of the queue.
 n_samples = 100;
 
-% Each sample is run up to a maximum time of 480 (8 hours).
+% Each sample is run up to a maximum time of 1000 or 480 for 8 hours.
 max_time = 480;
 
 % Record how many customers are in the system at the end of each sample.
@@ -58,7 +58,7 @@ TotalTime = vertcat(TotalTimeSamples{:});
 % samples for which there were n customers in the system.
 
 %h3 = histogram(TotalTime, Normalization="probability", BinMethod="integers");
-%h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
+h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
 h1 = histogram(NInSystem, Normalization="probability", BinMethod="integers");
 
 % MATLAB-ism: Once you've created a picture, you can use "hold on" to cause
@@ -69,8 +69,6 @@ hold on;
 % For comparison, plot the theoretical results for a M/M/1 queue.
 % The agreement isn't all that good unless you run for a long time, say
 % max_time = 10,000 units, and LogInterval is large, say 10.
-rho = q.ArrivalRate / q.DepartureRate;
-P0 = 1 - rho;
 nMax = 4; % 3 or 4 (before or after the second pump)
 ns = 0:nMax;
 p1 = [9,9,6,2]/26; 
