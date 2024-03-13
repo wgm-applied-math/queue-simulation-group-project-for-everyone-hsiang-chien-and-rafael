@@ -7,7 +7,7 @@
 n_samples = 100;
 
 % Each sample is run up to a maximum time of 1000 or 480 for 8 hours.
-max_time = 480;
+max_time = 1000;
 
 % Record how many customers are in the system at the end of each sample.
 NInSystemSamples = cell([1, n_samples]);
@@ -22,7 +22,7 @@ NBalkSamples = cell([1,n_samples]);
 % the log interval should be long enough for several arrival and departure
 % events happen.
 for sample_num = 1:n_samples
-    q = ServiceQueue(LogInterval=10,NumServers=2);
+    q = ServiceQueue(LogInterval=10,NumServers=1);
     q.schedule_event(Arrival(1, Customer(1)));
     run_until(q, max_time);
     % Pull out samples of the number of customers in the queue system. Each
@@ -30,7 +30,7 @@ for sample_num = 1:n_samples
     % counts, because tables like q.Log allow easy extraction of whole
     % columns like this.
     NInSystemSamples{sample_num} = q.Log.NWaiting + q.Log.NInService;
-    NBalkSamples{sample_num} = q.Log.NBalk;
+    NBalkSamples{sample_num} = q.Log.NBalk(end);
     TotalTimeSamples{sample_num}=served_customer_times(q);
 end
 
@@ -57,8 +57,8 @@ TotalTime = vertcat(TotalTimeSamples{:});
 % area of the bar at horizontal index n is proportional to the fraction of
 % samples for which there were n customers in the system.
 
-%h3 = histogram(TotalTime, Normalization="probability", BinMethod="integers");
-h2 = histogram(PBalk, Normalization="probability",BinMethod="integers");
+h3 = histogram(TotalTime, Normalization="probability");
+h2 = histogram(PBalk, Normalization="probability");
 h1 = histogram(NInSystem, Normalization="probability", BinMethod="integers");
 
 % MATLAB-ism: Once you've created a picture, you can use "hold on" to cause
